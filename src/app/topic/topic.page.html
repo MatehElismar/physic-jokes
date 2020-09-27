@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{topic?.name}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-md="6" offset-md="3">
+        <ion-list>
+          <ion-item-group>
+            <div *ngFor="let f of topic?.formulas">
+              <ion-item-divider color="light" *ngIf="f.topic != undefined">{{f.topic}}</ion-item-divider>
+              <ion-item button class="formula text-center" (click)="selectFormula(f)">
+                <h4>{{f.desc}}</h4>
+              </ion-item>
+            </div>
+          </ion-item-group>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

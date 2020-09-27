@@ -1,55 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 
-import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Platform } from "@ionic/angular";
+import { SplashScreen } from "@ionic-native/splash-screen/ngx";
+import { StatusBar } from "@ionic-native/status-bar/ngx";
+import { topics } from "./conts";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss']
+  selector: "app-root",
+  templateUrl: "app.component.html",
+  styleUrls: ["app.component.scss"],
 })
 export class AppComponent implements OnInit {
-  public selectedIndex = 0;
-  public appPages = [
-    {
-      title: 'Inbox',
-      url: '/folder/Inbox',
-      icon: 'mail'
-    },
-    {
-      title: 'Outbox',
-      url: '/folder/Outbox',
-      icon: 'paper-plane'
-    },
-    {
-      title: 'Favorites',
-      url: '/folder/Favorites',
-      icon: 'heart'
-    },
-    {
-      title: 'Archived',
-      url: '/folder/Archived',
-      icon: 'archive'
-    },
-    {
-      title: 'Trash',
-      url: '/folder/Trash',
-      icon: 'trash'
-    },
-    {
-      title: 'Spam',
-      url: '/folder/Spam',
-      icon: 'warning'
-    }
-  ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
+  selectedIndex = 0;
 
-  constructor(
-    private platform: Platform,
-    private splashScreen: SplashScreen,
-    private statusBar: StatusBar
-  ) {
+  // used for an example of ngFor and navigation
+  topics = [
+    // { title: 'Home', component: HomePage },
+    { title: "Intereses", url: `/topic/${topics.interest}`, icon: "heart" },
+    { title: "Velocidad Transaccional", url: `/topic/${topics.vel_trans}`, icon: "heart" },
+    { title: "Velocidad Angular", url: `/topic/${topics.speed}`, icon: "heart" },
+    { title: "Cinematica Rotacional", url: `/topic/${topics.cinematica_rotacional}`, icon: "heart" },
+    { title: "Conversiones", url: `/topic/${topics.conversiones}`, icon: "heart" },
+  ];
+
+  labels = ["Family", "Friends", "Notes", "Work", "Travel", "Reminders"];
+
+  constructor(private platform: Platform, private splashScreen: SplashScreen, private statusBar: StatusBar) {
     this.initializeApp();
   }
 
@@ -61,9 +37,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    const path = window.location.pathname.split('folder/')[1];
+    const path = window.location.pathname.split("topic/")[1];
     if (path !== undefined) {
-      this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
+      this.selectedIndex = this.topics.findIndex((page) => page.title.toLowerCase() === path.toLowerCase());
     }
   }
 }

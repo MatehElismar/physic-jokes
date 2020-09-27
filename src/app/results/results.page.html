@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Resultados</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-md="6" offset-md="3">
+        <ion-list color="header">
+          <ion-item>
+            <ion-title>Resultado</ion-title>
+            <h1 text-wrap class="text-center">{{result | number}} {{unidadSalida}}</h1>
+          </ion-item>
+          <ion-item>
+            <ion-title>Ejercicio</ion-title>
+            <h6>{{formula?.desc}}</h6>
+          </ion-item>
+          <ion-grid style="background: white">
+            <ion-title class="">Datos ingresados</ion-title>
+            <ion-row *ngFor="let d of data">
+              <ion-col col-6 style="text-align: right">
+                <ion-item>
+                  <span><b>{{d.name}} :</b></span>
+                </ion-item>
+              </ion-col>
+              <ion-col col-6 style="text-align: left">
+                <ion-item>
+                  <span>{{d.value}} {{d.unidad}}</span>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-list>
+        <div class="divider">
+          <ion-button expand="block" color="header" clean full (click)="goHome()">Volver</ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
