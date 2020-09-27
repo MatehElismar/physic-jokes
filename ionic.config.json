@@ -1,0 +1,7 @@
+{
+  "name": "physics-jokes",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
