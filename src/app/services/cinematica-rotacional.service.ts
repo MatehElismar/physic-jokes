@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { SuperTopic } from "../models/topics.model";
-import { ConversionesService } from "./conversiones.service";
+import { ConversionesService, InputUnits } from "./conversiones.service";
 
 @Injectable({
   providedIn: "root",
@@ -13,92 +13,74 @@ export class CinematicaRotacionalService extends SuperTopic {
         topic: "Momento de torcion",
         desc: "τ = F * r * sen Ѳ",
         properties: [
-          { name: "Fuerza", allowedInputUnits: "Fuerza" },
-          { name: "Radio", allowedInputUnits: "Longitud" },
-          { name: "Angulo", allowedInputUnits: "Angulo" },
+          { name: "Fuerza", allowedInputUnits: ["Fuerza"] },
+          { name: "Radio", allowedInputUnits: ["Longitud"] },
+          { name: "Angulo", allowedInputUnits: ["Angulo"] },
         ],
-        units: "N*M",
-        handler: (params, uMedida, unidadSalida) => {
-          var u = unidadSalida.split("*");
-          uMedida.salida = { Fuerza: u[0], Radio: u[1] };
-          uMedida.salida = unidadSalida;
+        units: "MomentoDeTorcion",
+        handler: (params: { Fuerza: number; Radio: number; Angulo: number }, uMedida) => {
           return this.MomentoDeTorcion(params.Fuerza, params.Radio, params.Angulo, uMedida);
         },
       },
       {
         desc: "τ = F * d",
         properties: [
-          { name: "Fuerza", allowedInputUnits: "Fuerza" },
-          { name: "Palanca", allowedInputUnits: "Longitud" },
+          { name: "Fuerza", allowedInputUnits: ["Fuerza"] },
+          { name: "Palanca", allowedInputUnits: ["Longitud"] },
         ],
-        units: "N*M",
-        handler: (params, uMedida, unidadSalida) => {
-          var u = unidadSalida.split("*");
-          uMedida.salida = { Fuerza: u[0], Palanca: u[1] };
-          uMedida.salida = unidadSalida;
+        units: "MomentoDeTorcion",
+        handler: (params, uMedida) => {
           return this.MomentoDeTorcion2(params.Fuerza, params.Palanca, uMedida);
         },
       },
       {
         desc: "τ = I * ω",
         properties: [
-          { name: "Inercia", allowedInputUnits: "Inercia" },
-          { name: "Velocidad", allowedInputUnits: "Velocidad_Angular" },
+          { name: "Inercia", allowedInputUnits: ["Inercia"] },
+          { name: "Velocidad", allowedInputUnits: ["Velocidad_Angular"] },
         ],
-        units: "N*M",
-        handler: (params, uMedida, unidadSalida) => {
-          var u = unidadSalida.split("*");
-          uMedida.salida = { Fuerza: u[0], Palanca: u[1] };
-          uMedida.salida = unidadSalida;
+        units: "MomentoDeTorcion",
+        handler: (params, uMedida) => {
           return this.MomentoDeTorcion3(params.Inercia, params.Velocidad, uMedida);
         },
       },
       {
         desc: "∑τ = I * α",
         properties: [
-          { name: "Inercia", allowedInputUnits: "Inercia" },
-          { name: "Aceleracion", allowedInputUnits: "Aceleracion_Angular" },
+          { name: "Inercia", allowedInputUnits: ["Inercia"] },
+          { name: "Aceleracion", allowedInputUnits: ["Aceleracion_Angular"] },
         ],
-        units: "N*M",
-        handler: (params, uMedida, unidadSalida) => {
-          var u = unidadSalida.split("*");
-          uMedida.salida = { Fuerza: u[0], Palanca: u[1] };
-          uMedida.salida = unidadSalida;
+        units: "MomentoDeTorcion",
+        handler: (params, uMedida) => {
           return this.TorqueNeto(params.Inercia, params.Aceleracion, uMedida);
         },
       },
       {
         desc: "τ = P /  ω",
         properties: [
-          { name: "Potencia", allowedInputUnits: "Potencia" },
-          { name: "Velocidad", allowedInputUnits: "Velocidad_Angular" },
+          { name: "Potencia", allowedInputUnits: ["Potencia"] },
+          { name: "Velocidad", allowedInputUnits: ["Velocidad_Angular"] },
         ],
-        units: "N*M",
-        handler: (params, uMedida, unidadSalida) => {
-          var u = unidadSalida.split("*");
-          uMedida.salida = { Fuerza: u[0], Palanca: u[1] };
-          uMedida.salida = unidadSalida;
+        units: "MomentoDeTorcion",
+        handler: (params, uMedida) => {
           return this.MomentoDeTorcion4(params.Potencia, params.Velocidad, uMedida);
         },
       },
       {
         desc: "τ = Vector del radio *  Vector de la fuerza",
         properties: [
-          { name: "Radio: Valor1", allowedInputUnits: "Componentes" },
-          { name: "Radio: Valor2", allowedInputUnits: "Componentes" },
-          { name: "Fuerza: Valor1", allowedInputUnits: "Componentes" },
-          { name: "Fuerza: Valor2", allowedInputUnits: "Componentes" },
+          { name: "Radio: Valor1", allowedInputUnits: ["Componentes"] },
+          { name: "Radio: Valor2", allowedInputUnits: ["Componentes"] },
+          { name: "Fuerza: Valor1", allowedInputUnits: ["Componentes"] },
+          { name: "Fuerza: Valor2", allowedInputUnits: ["Componentes"] },
         ],
-        units: "N*M",
-        handler: (params, uMedida, unidadSalida) => {
-          var u = unidadSalida.split("*");
-          uMedida.salida = { Fuerza: u[0], Palanca: u[1] };
-          uMedida.salida = unidadSalida;
+        units: "MomentoDeTorcion",
+        handler: (params, uMedida) => {
           return this.MomentoDeTorcion5(params.Valor1, params.Valor2, uMedida);
         },
         //J K I
-        validateUnits: (input1: any, input2: any) => {
-          var allow = input1.units;
+        validateComponentes: (input1: any, input2: any) => {
+          const allow = input1.units;
           for (let i = 0; i < allow.length; i++) {
             //Se comprueba que el valor1 selecccionado no este en la lista de componentes del segundo
             if (input2.selectedU == allow[i]) {
@@ -118,14 +100,11 @@ export class CinematicaRotacionalService extends SuperTopic {
         topic: "Palanca De Torcion",
         desc: "d = r * sen ǿ",
         properties: [
-          { name: "Radio", allowedInputUnits: "Longitud" },
-          { name: "Angulo", allowedInputUnits: "Angulo" },
+          { name: "Radio", allowedInputUnits: ["Longitud"] },
+          { name: "Angulo", allowedInputUnits: ["Angulo"] },
         ],
-        units: "Cm Metros Km",
-        handler: (params, uMedida, unidadSalida) => {
-          // var u = unidadSalida.split('/')
-          // uMedida.salida = { Distancia: u[0], Tiempo: u[1] }
-          uMedida.salida = unidadSalida;
+        units: "Longitud",
+        handler: (params, uMedida) => {
           return this.PalancaDeTorcion(params.Radio, params.Angulo, uMedida);
         },
       },
@@ -136,26 +115,22 @@ export class CinematicaRotacionalService extends SuperTopic {
         topic: " Momento de inercia",
         desc: "I = m * r²",
         properties: [
-          { name: "Masa", allowedInputUnits: "Peso" },
-          { name: "Radio", allowedInputUnits: "Longitud" },
+          { name: "Masa", allowedInputUnits: ["Peso"] },
+          { name: "Radio", allowedInputUnits: ["Longitud"] },
         ],
-        units: "N*M",
-        handler: (params, uMedida, unidadSalida) => {
-          var u = unidadSalida.split("*");
-          uMedida.salida = { Fuerza: u[0], Radio: u[1] };
-          uMedida.salida = unidadSalida;
+        units: "MomentoDeTorcion",
+        handler: (params, uMedida) => {
           return this.Inercia(params.Masa, params.Radio, uMedida);
         },
       },
       {
         desc: "I = ∑τ / α",
         properties: [
-          { name: "Torque_Neto", allowedInputUnits: "null" },
-          { name: "Aceleracion", allowedInputUnits: "Aceleracion_Angular" },
+          { name: "Torque_Neto", allowedInputUnits: ["MomentoDeTorcion"] },
+          { name: "Aceleracion", allowedInputUnits: ["Aceleracion_Angular"] },
         ],
-        units: "Watts",
-        handler: (params, uMedida, unidadSalida) => {
-          uMedida.salida = unidadSalida;
+        units: "Potencia",
+        handler: (params, uMedida) => {
           return this.Inercia2(params.Torque_Neto, params.Aceleracion, uMedida);
         },
       },
@@ -166,24 +141,22 @@ export class CinematicaRotacionalService extends SuperTopic {
         topic: "Potencia",
         desc: "P = τ * ω",
         properties: [
-          { name: "Torque", allowedInputUnits: "Torque" },
-          { name: "Velocidad", allowedInputUnits: "Velocidad_Angular" },
+          { name: "Torque", allowedInputUnits: ["MomentoDeTorcion"] },
+          { name: "Velocidad", allowedInputUnits: ["Velocidad_Angular"] },
         ],
-        units: "Watts",
-        handler: (params, uMedida, unidadSalida) => {
-          uMedida.salida = unidadSalida;
+        units: "Potencia",
+        handler: (params, uMedida) => {
           return this.Potencia(params.Torque, params.Velocidad, uMedida);
         },
       },
       {
         desc: "P = W / t",
         properties: [
-          { name: "Trabajo", allowedInputUnits: "Trabajo" },
-          { name: "Tiempo", allowedInputUnits: "Tiempo" },
+          { name: "Trabajo", allowedInputUnits: ["Trabajo"] },
+          { name: "Tiempo", allowedInputUnits: ["Tiempo"] },
         ],
-        units: "Watts",
-        handler: (params, uMedida, unidadSalida) => {
-          uMedida.salida = unidadSalida;
+        units: "Potencia",
+        handler: (params, uMedida) => {
           return this.Potencia2(params.Trabajo, params.Tiempo, uMedida);
         },
       },
@@ -194,39 +167,35 @@ export class CinematicaRotacionalService extends SuperTopic {
         topic: "Trabajo",
         desc: "W = (1/2 * I * Wf²)  -  (1/2 * I * Wi²)",
         properties: [
-          { name: "Trabajo_Inicial", allowedInputUnits: "Trabajo" },
-          { name: "Trabajo_Final", allowedInputUnits: "Trabajo" },
-          { name: "Inercia", allowedInputUnits: "Inercia" },
+          { name: "Trabajo_Inicial", allowedInputUnits: ["Trabajo"] },
+          { name: "Trabajo_Final", allowedInputUnits: ["Trabajo"] },
+          { name: "Inercia", allowedInputUnits: ["Inercia"] },
         ],
-        units: "Julios",
-        handler: (params, uMedida, unidadSalida) => {
-          uMedida.salida = unidadSalida;
+        units: "Trabajo",
+        handler: (params, uMedida) => {
           return this.Trabajo(params.Inercia, params.Trabajo_Inicial, params.Trabajo, uMedida);
         },
       },
       {
         desc: "W = P / t",
         properties: [
-          { name: "Potencia", allowedInputUnits: "Potencia" },
-          { name: "Tiempo", allowedInputUnits: "Tiempo" },
-          { name: "Inercia", allowedInputUnits: "Inercia" },
+          { name: "Potencia", allowedInputUnits: ["Potencia"] },
+          { name: "Tiempo", allowedInputUnits: ["Tiempo"] },
         ],
-        units: "Julios",
-        handler: (params, uMedida, unidadSalida) => {
-          uMedida.salida = unidadSalida;
+        units: "Trabajo",
+        handler: (params, uMedida) => {
           return this.Trabajo2(params.Potencia, params.Tiempo, uMedida);
         },
       },
       {
         desc: "W = M * G * H",
         properties: [
-          { name: "Masa", allowedInputUnits: "Peso" },
-          { name: "Gravedad", allowedInputUnits: "none" },
-          { name: "Altura", allowedInputUnits: "Longitud" },
+          { name: "Masa", allowedInputUnits: ["Peso"] },
+          { name: "Gravedad", allowedInputUnits: ["none"] },
+          { name: "Altura", allowedInputUnits: ["Longitud"] },
         ],
-        units: "Julios",
-        handler: (params, uMedida, unidadSalida) => {
-          uMedida.salida = unidadSalida;
+        units: "Trabajo",
+        handler: (params, uMedida) => {
           return this.Trabajo3(params.Masa, params.Altura, uMedida);
         },
       },
@@ -237,12 +206,11 @@ export class CinematicaRotacionalService extends SuperTopic {
         topic: "Fuerza Tangencial",
         desc: "Ft = At / M",
         properties: [
-          { name: "Aceleracion", allowedInputUnits: "Aceleracion" },
-          { name: "Masa", allowedInputUnits: "Peso" },
+          { name: "Aceleracion", allowedInputUnits: ["Aceleracion"] },
+          { name: "Masa", allowedInputUnits: ["Peso"] },
         ],
-        units: "N",
-        handler: (params, uMedida, unidadSalida) => {
-          uMedida.salida = unidadSalida;
+        units: "Fuerza",
+        handler: (params, uMedida) => {
           return this.FuerzaTangencial(params.Aceleracion, params.Masa, uMedida);
         },
       },
@@ -253,12 +221,11 @@ export class CinematicaRotacionalService extends SuperTopic {
         topic: "Masa",
         desc: "M = Ft / At",
         properties: [
-          { name: "Fuerza", allowedInputUnits: "Fuerza" },
-          { name: "Aceleracion", allowedInputUnits: "Aceleracion" },
+          { name: "Fuerza", allowedInputUnits: ["Fuerza"] },
+          { name: "Aceleracion", allowedInputUnits: ["Aceleracion"] },
         ],
-        units: "Kg",
-        handler: (params, uMedida, unidadSalida) => {
-          uMedida.salida = unidadSalida;
+        units: "Peso",
+        handler: (params, uMedida) => {
           return this.Masa(params.Fuerza, params.Aceleracion, uMedida);
         },
       },
@@ -266,131 +233,269 @@ export class CinematicaRotacionalService extends SuperTopic {
     ]);
   }
 
-  Trabajo(Inercia: number, wInicial: number, wFinal: number, u: any) {
-    // trabajo 1/2 I Wf^2  -  1/2 I Wi^2
-
-    var trabajo = 0.5 * Inercia * Math.pow(wFinal, 2) - 0.5 * Inercia * Math.pow(wInicial, 2);
-
-    return trabajo;
-  }
-
-  Trabajo2(potencia: number, tiempo: number, u: any) {
-    //W = P / t
-
-    tiempo = this.conversiones.convertirTiempo(tiempo, u.Tiempo, "Segundos");
-
-    var trabajo = potencia / tiempo;
-
-    return trabajo;
-  }
-
-  Trabajo3(masa: number, altura: number, u: any) {
-    //W = masa * gravedad * altura;
-
-    altura = this.conversiones.convertirLongitud(altura, u.Altura, "M");
-
-    var trabajo = masa * 9.8 * altura;
+  // W = (1/2 * I * Wf²)  -  (1/2 * I * Wi²)
+  Trabajo(
+    Inercia: number,
+    wInicial: number,
+    wFinal: number,
+    uMedida: {
+      Inercia: typeof InputUnits.Inercia[number];
+      wInicial: typeof InputUnits.Trabajo[number];
+      wFinal: typeof InputUnits.Trabajo[number];
+      Salida: typeof InputUnits.Trabajo[number];
+    }
+  ) {
+    const trabajo = 0.5 * Inercia * Math.pow(wFinal, 2) - 0.5 * Inercia * Math.pow(wInicial, 2);
 
     return trabajo;
   }
 
-  FuerzaTangencial(Aceleracion: number, masa: number, u: any) {
-    // Ft = At / M
-    Aceleracion = this.conversiones.Aceleracion.Mt_Por_Segundo(Aceleracion, u.Aceleracion);
-    var fuerza = Aceleracion / masa;
+  //W = P / t
+  Trabajo2(
+    potencia: number,
+    tiempo: number,
+    uMedida: {
+      Potencia: typeof InputUnits.Potencia[number];
+      Tiempo: typeof InputUnits.Tiempo[number];
+      Salida: typeof InputUnits.Trabajo[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    tiempo = this.conversiones.convertirTiempo(tiempo, uMedida.Tiempo, "s");
+
+    const trabajo = potencia / tiempo;
+
+    return trabajo;
+  }
+
+  // W = M * G * H
+  Trabajo3(
+    masa: number,
+    altura: number,
+    uMedida: {
+      Mada: typeof InputUnits.Peso[number];
+      Altura: typeof InputUnits.Longitud[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    altura = this.conversiones.convertirLongitud(altura, uMedida.Altura, "M");
+
+    const trabajo = masa * 9.8 * altura;
+
+    return trabajo;
+  }
+
+  // Ft = At / M
+  FuerzaTangencial(
+    Aceleracion: number,
+    masa: number,
+    uMedida: {
+      Aceleracion: typeof InputUnits.Aceleracion[number];
+      Masa: typeof InputUnits.Peso[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    Aceleracion = this.conversiones.convertirAceleracion(Aceleracion, uMedida.Aceleracion, "M/s²");
+
+    const fuerza = Aceleracion / masa;
 
     return fuerza;
   }
 
-  Masa(fuerza: number, Aceleracion: number, u: any) {
-    // M = Ft/ At
-    Aceleracion = this.conversiones.Aceleracion.Mt_Por_Segundo(Aceleracion, u.Aceleracion);
-    var masa = fuerza / Aceleracion;
+  Masa(
+    fuerza: number,
+    Aceleracion: number,
+    uMedida: {
+      Aceleracion: typeof InputUnits.Aceleracion[number];
+      Fuerza: typeof InputUnits.Fuerza[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    Aceleracion = this.conversiones.convertirAceleracion(Aceleracion, uMedida.Aceleracion, "M/s²");
+
+    const masa = fuerza / Aceleracion;
 
     return masa;
   }
 
-  MomentoDeTorcion(fuerza: number, radio: number, angulo: number, uMedida: any) {
-    // τ = r * F * sen Ѳ
+  // τ = F * r * sen Ѳ
+  MomentoDeTorcion(
+    fuerza: number,
+    radio: number,
+    angulo: number,
+    uMedida: {
+      Fuerza: typeof InputUnits.Fuerza[number];
+      Radio: typeof InputUnits.Longitud[number];
+      Angulo: typeof InputUnits.Angulo[number];
+      Salida: typeof InputUnits.MomentoDeTorcion[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
     angulo = this.conversiones.convertirAngulo(angulo, uMedida.Angulo);
     radio = this.conversiones.convertirLongitud(radio, uMedida.Radio, "M");
-    var seno = Math.sin(angulo);
-    console.log("seno", seno);
+
+    const seno = Math.sin(angulo);
     return radio * fuerza * seno;
   }
 
-  MomentoDeTorcion2(fuerza: number, Palanca: number, uMedida: any) {
+  MomentoDeTorcion2(
+    fuerza: number,
+    Palanca: number,
+    uMedida: {
+      Fuerza: typeof InputUnits.Fuerza[number];
+      Palanca: typeof InputUnits.Longitud[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
     Palanca = this.conversiones.convertirLongitud(Palanca, uMedida.Palanca, "M");
+
     return fuerza * Palanca;
   }
 
-  MomentoDeTorcion3(Inercia: number, Velocidad: number, u?) {
-    // τ = I * ω
-    Velocidad = this.conversiones.Velocidad.Rad_Por_Segundo(Velocidad, u.Velocidad);
+  // τ = I * ω;
+  MomentoDeTorcion3(
+    Inercia: number,
+    VelocidadAngular: number,
+    uMedida: {
+      Inercia: typeof InputUnits.Inercia[number];
+      Velocidad: typeof InputUnits.Velocidad_Angular[number];
+      Salida: typeof InputUnits.MomentoDeTorcion;
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    VelocidadAngular = this.conversiones.convertirVelocidadAngular(VelocidadAngular, uMedida.Velocidad, "Rad/s");
 
-    var torque = Inercia * Velocidad;
+    const torque = Inercia * VelocidadAngular;
     return torque;
   }
 
-  MomentoDeTorcion4(Potencia: number, Velocidad: number, u?) {
-    // τ = P / ω
-    Velocidad = this.conversiones.Velocidad.Rad_Por_Segundo(Velocidad, u.Velocidad);
+  // τ = P / ω;
+  MomentoDeTorcion4(
+    Potencia: number,
+    VelocidadAngular: number,
+    uMedida: {
+      Potencia: typeof InputUnits.Potencia[number];
+      Velocidad: typeof InputUnits.Velocidad_Angular[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    VelocidadAngular = this.conversiones.convertirVelocidadAngular(VelocidadAngular, uMedida.Velocidad, "Rad/s");
 
-    var torque = Potencia / Velocidad;
+    const torque = Potencia / VelocidadAngular;
     return torque;
   }
 
-  MomentoDeTorcion5(Radio: any, Fuerza: any, u?) {
+  MomentoDeTorcion5(
+    Radio: any,
+    Fuerza: any,
+    uMedida: {
+      Radio: typeof InputUnits.Longitud[number];
+      Fuerza: typeof InputUnits.Fuerza[number];
+    }
+  ) {
     // τ = P / ω
     return 0;
   }
 
-  TorqueNeto(Inercia: number, Aceleracion: number, u?) {
-    // ∑τ = I * α
-    Aceleracion = this.conversiones.Aceleracion.Rad_Por_Segundos(Aceleracion, u.Aceleracion);
+  // ∑τ = I * α
+  TorqueNeto(
+    Inercia: number,
+    Aceleracion: number,
+    uMedida: {
+      Inercia: typeof InputUnits.Inercia[number];
+      Aceleracion: typeof InputUnits.Aceleracion_Angular[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    Aceleracion = this.conversiones.convertirAceleracion(Aceleracion, uMedida.Aceleracion, "Rad/s²");
 
-    var torque = Inercia * Aceleracion;
+    const torque = Inercia * Aceleracion;
+
     return torque;
   }
 
-  Inercia(masa: number, Radio: number, uMedida: any) {
-    // I = m * r²
+  // I = m * r²
+  Inercia(
+    masa: number,
+    Radio: number,
+    uMedida: { Masa: typeof InputUnits.Peso[number]; Radio: typeof InputUnits.Longitud[number] }
+  ) {
+    // convertir variables a sus unidades bases
     Radio = this.conversiones.convertirLongitud(Radio, uMedida.Radio, "M");
-    var inercia = masa * Math.pow(Radio, 2);
+
+    const inercia = masa * Math.pow(Radio, 2);
+
     return inercia;
   }
 
-  Inercia2(TorqueNeto: number, Aceleracion: number, u?: any) {
-    // I = ∑τ / α
+  // I = ∑τ / α
+  Inercia2(
+    TorqueNeto: number,
+    Aceleracion: number,
+    uMedida: {
+      TorqueNeto: typeof InputUnits.Fuerza[number];
+      Aceleracion: typeof InputUnits.Aceleracion_Angular[number];
+      Salida: typeof InputUnits.Potencia[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    Aceleracion = this.conversiones.convertirAceleracion(Aceleracion, uMedida.Aceleracion, "Rad/s²");
 
-    Aceleracion = this.conversiones.Aceleracion.Rad_Por_Segundos(Aceleracion, u.Aceleracion);
-
-    var inercia = TorqueNeto / Aceleracion;
+    const inercia = TorqueNeto / Aceleracion;
     return inercia;
   }
 
-  PalancaDeTorcion(radio: number, angulo: number, u: any) {
-    angulo = this.conversiones.convertirAngulo(angulo, u.Angulo);
-    radio = this.conversiones.convertirLongitud(radio, u.Radio, "M");
-    var seno = Math.sin(angulo);
-    var palanca = radio * seno;
+  // d = r * sen ǿ
+  PalancaDeTorcion(
+    radio: number,
+    angulo: number,
+    uMedida: {
+      Radio: typeof InputUnits.Longitud[number];
+      Angulo: typeof InputUnits.Angulo[number];
+      Salida: typeof InputUnits.Longitud[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    angulo = this.conversiones.convertirAngulo(angulo, uMedida.Angulo);
+    radio = this.conversiones.convertirLongitud(radio, uMedida.Radio, "M");
+    const seno = Math.sin(angulo);
+    const palanca = radio * seno;
 
-    return this.conversiones.convertirLongitud(palanca, "M", u.salida);
+    // convertir resultado desde su unidad base a las unidades que quiere el usuario
+    return this.conversiones.convertirLongitud(palanca, "M", uMedida.Salida);
   }
 
-  Potencia(Torque: number, Velocidad: number, u?) {
-    //P = τ * ω
-    Velocidad = this.conversiones.Velocidad.Rad_Por_Segundo(Velocidad, u.Velocidad);
+  //P = τ * ω
+  Potencia(
+    Torque: number,
+    Velocidad: number,
+    uMedida: {
+      Torque: typeof InputUnits.MomentoDeTorcion[number];
+      Velocidad: typeof InputUnits.Velocidad_Angular[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    Velocidad = this.conversiones.convertirVelocidadAngular(Velocidad, uMedida.Velocidad, "Rad/s");
 
-    var potencia = Torque * Velocidad;
+    const potencia = Torque * Velocidad;
+
     return potencia;
   }
 
-  Potencia2(trabajo: number, tiempo: number, u?) {
-    //P = W / t
-    tiempo = this.conversiones.convertirTiempo(tiempo, u.Tiempo, "Segundos");
+  // P = W / t
+  Potencia2(
+    trabajo: number,
+    tiempo: number,
+    uMedida: {
+      Trabajo: typeof InputUnits.Trabajo[number];
+      Tiempo: typeof InputUnits.Tiempo[number];
+      Salida: typeof InputUnits.Potencia[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    tiempo = this.conversiones.convertirTiempo(tiempo, uMedida.Tiempo, "s");
 
-    var potencia = trabajo / tiempo;
+    const potencia = trabajo / tiempo;
     return potencia;
   }
 }

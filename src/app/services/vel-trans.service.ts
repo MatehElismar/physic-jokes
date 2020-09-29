@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { SuperTopic } from "../models/topics.model";
-import { ConversionesService } from "./conversiones.service";
+import { ConversionesService, InputUnits } from "./conversiones.service";
 
 @Injectable({
   providedIn: "root",
@@ -13,29 +13,23 @@ export class VelTransService extends SuperTopic {
         topic: "Velocidad",
         desc: " v = v * + a * t",
         properties: [
-          { name: "Velocidad", allowedInputUnits: "Velocidad" },
-          { name: "Aceleracion", allowedInputUnits: "Aceleracion" },
-          { name: "Tiempo", allowedInputUnits: "Tiempo" },
+          { name: "Velocidad", allowedInputUnits: ["Velocidad"] },
+          { name: "Aceleracion", allowedInputUnits: ["Aceleracion"] },
+          { name: "Tiempo", allowedInputUnits: ["Tiempo"] },
         ],
-        units: "M/Segundos Km/Horas Millas/Horas",
-        handler: (params, uMedida, unidadSalida) => {
-          var u = unidadSalida.split("/");
-          uMedida.salida = { Distancia: u[0], Tiempo: u[1] };
-
+        units: "Velocidad",
+        handler: (params, uMedida) => {
           return this.CircularSpeed1(params.Velocidad, params.Aceleracion, params.Tiempo, uMedida);
         },
       },
       {
         desc: " v = d / t",
         properties: [
-          { name: "Distancia", allowedInputUnits: "Longitud" },
-          { name: "Tiempo", allowedInputUnits: "Tiempo" },
+          { name: "Distancia", allowedInputUnits: ["Longitud"] },
+          { name: "Tiempo", allowedInputUnits: ["Tiempo"] },
         ],
-        units: "M/Segundos Km/Horas Millas/Horas",
-        handler: (params, uMedida, unidadSalida) => {
-          var u = unidadSalida.split("/");
-          uMedida.salida = { Distancia: u[0], Tiempo: u[1] };
-
+        units: "Velocidad",
+        handler: (params, uMedida) => {
           return this.CircularSpeed(params.Distancia, params.Tiempo, uMedida);
         },
       },
@@ -45,12 +39,11 @@ export class VelTransService extends SuperTopic {
         topic: "Tiempo,",
         desc: "t = d / v",
         properties: [
-          { name: "Distancia", allowedInputUnits: "Longitud" },
-          { name: "Velocidad", allowedInputUnits: "Velocidad" },
+          { name: "Distancia", allowedInputUnits: ["Longitud"] },
+          { name: "Velocidad", allowedInputUnits: ["Velocidad"] },
         ],
-        units: "Horas Minutos Segundos",
-        handler: (params, uMedida, unidadSalida) => {
-          uMedida.salida = unidadSalida;
+        units: "Tiempo",
+        handler: (params, uMedida) => {
           return this.CircularTime(params.Distancia, params.Velocidad, uMedida);
         },
       },
@@ -58,41 +51,97 @@ export class VelTransService extends SuperTopic {
         topic: "Distancia",
         desc: "d = v * t",
         properties: [
-          { name: "Velocidad", allowedInputUnits: "Velocidad" },
-          { name: "Tiempo", allowedInputUnits: "Tiempo" },
+          { name: "Velocidad", allowedInputUnits: ["Velocidad"] },
+          { name: "Tiempo", allowedInputUnits: ["Tiempo"] },
         ],
-        units: "M Km Cm",
-        handler: (params, uMedida, unidadSalida) => {
-          uMedida.salida = unidadSalida;
+        units: "Longitud",
+        handler: (params, uMedida) => {
           return this.Distancia(params.Velocidad, params.Tiempo, uMedida);
         },
       },
     ]);
   }
 
-  CircularSpeed(distancia: number, tiempo: number, u?: any): number {
-    distancia = this.conversiones.convertirLongitud(distancia, u.Distancia, "M");
-    tiempo = this.conversiones.convertirTiempo(tiempo, u.Tiempo, "Segundos");
+  CircularSpeed(
+    distancia: number,
+    tiempo: number,
+    uMedida: {
+      Distancia: typeof InputUnits.Longitud[number];
+      Tiempo: typeof InputUnits.Tiempo[number];
+      Salida: typeof InputUnits.Velocidad[number];
+    }
+  ): number {
+    const [uSalidaDistancia, uSalidaTiempo] = uMedida.Salida.split("/"); //Dividimos la unidad de salida de velocidad para saber en que unidades quiere el arco y tiempo en el resultado
+
+    // convertir variables a sus unidades bases
+    distancia = this.conversiones.convertirLongitud(distancia, uMedida.Distancia, "M");
+    tiempo = this.conversiones.convertirTiempo(tiempo, uMedida.Tiempo, "s");
+
     var speed = distancia / tiempo;
-    return this.conversiones.convertirVelocidad(speed, u.salida.Distancia, u.salida.Tiempo);
+
+    // convertir resultado desde su unidad base a las unidades que quiere el usuario
+    return this.conversiones.convertirVelocidad(speed, "M/S", uMedida.Salida);
   }
 
-  CircularSpeed1(initialSpeed: number, aceleracion: number, tiempo: number, u?: any): number {
-    tiempo = this.conversiones.convertirTiempo(tiempo, u.Tiempo, "Segundos");
-    var speed = initialSpeed + aceleracion * tiempo;
-    return this.conversiones.convertirVelocidad(speed, u.salida.Distancia, u.salida.Tiempo);
+  // vf = v1 + a * t
+  CircularSpeed1(
+    initialSpeed: number,
+    aceleracion: number,
+    tiempo: number,
+    uMedida: {
+      Velocidad: typeof InputUnits.Velocidad[number];
+      Aceleracion: typeof InputUnits.Aceleracion[number];
+      Tiempo: typeof InputUnits.Tiempo[number];
+      Salida: typeof InputUnits.Velocidad[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    tiempo = this.conversiones.convertirTiempo(tiempo, uMedida.Tiempo, "s");
+    aceleracion = this.conversiones.convertirAceleracion(tiempo, uMedida.Aceleracion, "M/s²");
+
+    const speed = initialSpeed + aceleracion * tiempo;
+
+    // convertir resultado desde su unidad base a las unidades que quiere el usuario
+    return this.conversiones.convertirVelocidad(speed, "M/S", uMedida.Salida);
   }
 
-  CircularTime(distancia: number, speed: number, u?: any) {
-    this.conversiones.convertirLongitud(distancia, u.Distancia, u.salida.Distancia);
-    var time = distancia / speed;
-    return this.conversiones.convertirTiempo(time, u.Tiempo, u.salida.Tiempo);
+  // t = d / v;
+  CircularTime(
+    distancia: number,
+    speed: number,
+    uMedida: {
+      Distancia: typeof InputUnits.Longitud[number];
+      Velocidad: typeof InputUnits.Velocidad[number];
+      Salida: typeof InputUnits.Tiempo[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    distancia = this.conversiones.convertirLongitud(distancia, uMedida.Distancia, "M");
+    speed = this.conversiones.convertirVelocidad(distancia, uMedida.Velocidad, "M/S");
+
+    const time = distancia / speed;
+
+    // convertir resultado desde su unidad base a las unidades que quiere el usuario
+    return this.conversiones.convertirTiempo(time, "s", uMedida.Salida);
   }
 
-  Distancia(velocidad: number, tiempo: number, u?: any) {
-    tiempo = this.conversiones.convertirTiempo(tiempo, u.Tiempo, "Segundos");
-    velocidad = this.conversiones.Velocidad.Mt_Por_Segundo(velocidad, u.Velocidad);
-    var vel = velocidad * tiempo;
-    return this.conversiones.convertirVelocidad(vel, u.salida.Distancia, u.salida.Tiempo);
+  // d = v * t;
+  Distancia(
+    velocidad: number,
+    tiempo: number,
+    uMedida: {
+      Velocidad: typeof InputUnits.Velocidad[number];
+      Tiempo: typeof InputUnits.Tiempo[number];
+      Salida: typeof InputUnits.Longitud[number];
+    }
+  ) {
+    // convertir variables a sus unidades bases
+    tiempo = this.conversiones.convertirTiempo(tiempo, uMedida.Tiempo, "s");
+    velocidad = this.conversiones.convertirVelocidad(velocidad, uMedida.Velocidad, "M/S");
+
+    var distancia = velocidad * tiempo;
+
+    // convertir resultado desde su unidad base a las unidades que quiere el usuario
+    return this.conversiones.convertirLongitud(distancia, "M", uMedida.Salida);
   }
 }

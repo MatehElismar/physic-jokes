@@ -1,9 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { Location } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ActionSheetController, AlertController } from "@ionic/angular";
 import { Formula } from "../models/topics.model";
-import { ConversionesService } from "../services/conversiones.service";
+import { ConversionesService, InputUnits } from "../services/conversiones.service";
 import { AppService } from "../services/app.service";
 
 @Component({
@@ -19,7 +19,6 @@ export class InsertDataPage implements OnInit {
 
   constructor(
     private alertCtrl: AlertController,
-    private conversiones: ConversionesService,
     private actionCtrl: ActionSheetController,
     private router: Router,
     private app: AppService,
@@ -53,12 +52,11 @@ export class InsertDataPage implements OnInit {
 
   validateUnits(input: any) {
     console.log("Estamos aqui");
-    if (this.formula.validateUnits != undefined) {
-      var allowedInputs = this.conversiones.InputUnits[this.formula.properties[0].allowedInputUnits];
+    if (this.formula.validateComponentes != undefined) {
       if (input.name.contains("radio")) {
-        input.units = this.formula.validateUnits(input["Radio:Valor1"], input["Radio:Valor2"]);
+        input.units = this.formula.validateComponentes(input["Radio:Valor1"], input["Radio:Valor2"]);
       } else if (input.name.contains("Fuerza")) {
-        input.units = this.formula.validateUnits(input["Fuerza:Valor1"], input["Fuerza:Valor2"]);
+        input.units = this.formula.validateComponentes(input["Fuerza:Valor1"], input["Fuerza:Valor2"]);
       }
     }
   }
@@ -66,10 +64,10 @@ export class InsertDataPage implements OnInit {
   seleccionarUnidades() {
     const buttons: any[] = [];
 
-    const u = this.formula.units.split(" ");
+    const u = InputUnits[this.formula.units];
 
     // Si la formula solon tiene una sola posible unidad de salida, se procede a mostrar el resulttado
-    if (u.length <= 1) {
+    if (!Array.isArray(u)) {
       this.unidadSalida = u[0]; //Para pasarselo a la tabla de conversion
       this.solve();
       return;
@@ -105,14 +103,14 @@ export class InsertDataPage implements OnInit {
       input.name = properties[i].name;
       input.value = "";
 
-      let unidades = properties[i].allowedInputUnits.split(" ");
+      let unidades = properties[i].allowedInputUnits;
       for (let i = 0; i < unidades.length; i++) {
         dontShow = unidades[i] == "none" ? true : false;
         if (i == 0) {
-          input.selectedU = this.conversiones.InputUnits[unidades[i]][0];
+          input.selectedU = InputUnits[unidades[i]][0];
         }
         input.units = [];
-        input.units = input.units.concat(this.conversiones.InputUnits[unidades[i]]);
+        input.units = input.units.concat(InputUnits[unidades[i]]);
       }
       if (!dontShow) {
         this.inputs.push(input);
@@ -128,6 +126,7 @@ export class InsertDataPage implements OnInit {
       params[name] = Number.parseFloat(this.inputs[i].value);
       this.uMedida[name] = this.inputs[i].selectedU;
     }
+    this.uMedida["Salida"] = this.unidadSalida;
     return params;
   }
 
@@ -165,7 +164,7 @@ export class InsertDataPage implements OnInit {
     var params = this.getArrayParams();
 
     // Llamamos al metodo que resuelve el problema dandole los datos ingresados y sus respectivas unidades de medida
-    var result: number = this.formula.handler(params, this.uMedida, this.unidadSalida);
+    var result: number = this.formula.handler(params, this.uMedida);
     console.log("result", result);
 
     // Mostramos la pagina de resultados pasandole la formula, el resultado y los datos ingresados

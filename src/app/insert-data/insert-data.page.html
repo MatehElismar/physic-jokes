@@ -9,7 +9,7 @@
     <ion-grid>
       <!-- Angulo -->
       <ion-row *ngFor="let input of inputs">
-        <ion-col size="10">
+        <ion-col size="10" size-md="4" offset-md="3">
           <ion-item>
             <ion-label floating>{{input.name}}</ion-label>
             <ion-input [(ngModel)]="input.value" name="input.name" type="tel"></ion-input>
@@ -20,9 +20,9 @@
         </ion-col> -->
         <ion-col size="2" align-self-center>
           <ion-item class="rounded">
-            <ion-label fixed class="text-center">U</ion-label>
+            <ion-label fixed class="text-center">Unidad</ion-label>
             <ion-select (ionChange)="validateUnits(input)" interface="popover" [(ngModel)]="input.selectedU">
-              <ion-select-option *ngFor="let u of input.units" value="{{u}}">{{u}}</ion-select-option>
+              <ion-select-option *ngFor="let u of input.units" [value]="u">{{u}}</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-col>

@@ -1,10 +1,15 @@
+import { PhysicVariable } from "../services/conversiones.service";
+
 export interface Formula {
   topic?: string;
   desc: string;
-  properties: Array<{ name: string; allowedInputUnits: string }>;
-  units: string;
-  handler: (params: any, inputUnit: any, outputUnit: string) => number;
-  validateUnits?: (input1: { units: string[] }, input2: { units: string[] }) => void;
+  properties: Array<{
+    name: string;
+    allowedInputUnits: PhysicVariable[]; //the input units of the specified physic variable are allowed
+  }>;
+  units: PhysicVariable;
+  handler: (params: any, uMedida) => number;
+  validateComponentes?: (input1: { units: string[] }, input2: { units: string[] }) => void;
 }
 
 export class SuperTopic {
