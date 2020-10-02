@@ -10,7 +10,7 @@ export class InputUnits {
   static Velocidad = ["M/S", "MPH", "KM/H"] as const;
   static Velocidad_Angular = ["Rad/s", "Rad/m", "Rad/h", "Rev/s", "Rev/m", "Rev/h"] as const;
   static Tiempo = ["s", "min", "h"] as const;
-  static TiempoInteres = ["Dias", "Meses", "Anos"] as const;
+  static TiempoInteres = ["Dias", "Meses", "Trimestres", "Anos"] as const;
   static Aceleracion = ["M/s²", "KM/s²", "Mi/s²"] as const;
   static Aceleracion_Angular = ["Rad/s²", "Rad/m²", "Rev/s²", "Rev/m²"] as const;
   static Longitud = ["Cm", "M", "Km", "Mi"] as const;
@@ -22,8 +22,8 @@ export class InputUnits {
   static Trabajo = ["Julios"] as const;
   static Componentes = ["J", "K", "I"] as const;
   static MomentoDeTorcion = ["N*M"] as const;
-  static TasaDeInteres = ["Mensual", "Anual", "Diaria"] as const;
-  static Dinero = ["RD$", "USD$"] as const;
+  static TasaDeInteres = ["Anual", "Trimestral", "Mensual", "Diaria"] as const;
+  static Dinero = ["RD$" /* , "USD$" */] as const;
 }
 export type PhysicVariable = keyof typeof InputUnits;
 
@@ -89,11 +89,14 @@ export class ConversionesService extends SuperTopic {
     to: typeof InputUnits.TasaDeInteres[number]
   ) {
     if (from == "Anual" && to == "Mensual") return I / 12;
+    else if (from == "Anual" && to == "Diaria") return I / 360;
+    else if (from == "Anual" && to == "Trimestral") return I / 4;
     else if (from == "Mensual" && to == "Anual") return I * 12;
     else if (from == "Mensual" && to == "Diaria") return I / 30;
-    else if (from == "Anual" && to == "Diaria") return I / 360;
+    else if (from == "Mensual" && to == "Trimestral") return I * 3;
     else if (from == "Diaria" && to == "Mensual") return I * 30;
     else if (from == "Diaria" && to == "Anual") return I * 360;
+    else if (from == "Diaria" && to == "Trimestral") return I * 90;
     else return I;
   }
 
@@ -201,6 +204,7 @@ export class ConversionesService extends SuperTopic {
     if (to == "Anos") tiempo = this.Tiempo.anos(tiempo, from);
     else if (to == "Meses") tiempo = this.Tiempo.meses(tiempo, from);
     else if (to == "Dias") tiempo = this.Tiempo.dias(tiempo, from);
+    else if (to == "Trimestres") tiempo = this.Tiempo.trimestres(tiempo, from);
 
     return tiempo;
   }
@@ -537,21 +541,35 @@ class Tiempo {
     return ss / 3600;
   }
 
+  // convertir a:
   meses(n: number, from: typeof InputUnits.TiempoInteres[number]) {
     if (from == "Anos") return n * 12;
+    else if (from == "Trimestres") n * 30;
     else if (from == "Meses") return n;
     else if (from == "Dias") return n / 30;
   }
 
+  // convertir a:
   anos(n: number, from: typeof InputUnits.TiempoInteres[number]) {
     if (from == "Anos") return n;
+    else if (from == "Trimestres") return n / 4;
     else if (from == "Meses") return n / 12;
     else if (from == "Dias") return n / 360;
   }
 
+  // convertir a:
   dias(n: number, from: typeof InputUnits.TiempoInteres[number]) {
     if (from == "Anos") return n * 360;
+    if (from == "Trimestres") return n * 90;
     else if (from == "Meses") return n * 30;
+    else return n;
+  }
+
+  // convertir a:
+  trimestres(n: number, from: typeof InputUnits.TiempoInteres[number]) {
+    if (from == "Anos") return n * 4;
+    else if (from == "Meses") return n / 3;
+    else if (from == "Dias") return n / 90;
     else return n;
   }
 }

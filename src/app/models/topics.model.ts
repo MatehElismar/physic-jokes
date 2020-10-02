@@ -3,6 +3,7 @@ import { PhysicVariable } from "../services/conversiones.service";
 export interface Formula {
   topic?: string;
   desc: string;
+  note?: string;
   properties: Array<{
     name: string;
     allowedInputUnits: PhysicVariable[]; //the input units of the specified physic variable are allowed

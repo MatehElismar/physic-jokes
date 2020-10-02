@@ -1,38 +1,200 @@
+<style type="text/css">
+  .lds-grid {
+    display: inline-block;
+    position: relative;
+    margin: auto;
+    width: 80px;
+    height: 80px;
+  }
+  .lds-grid div {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fcf;
+    animation: lds-grid 1.2s linear infinite;
+  }
+  .lds-grid div:nth-child(1) {
+    top: 8px;
+    left: 8px;
+    animation-delay: 0s;
+  }
+  .lds-grid div:nth-child(2) {
+    top: 8px;
+    left: 32px;
+    animation-delay: -0.4s;
+  }
+  .lds-grid div:nth-child(3) {
+    top: 8px;
+    left: 56px;
+    animation-delay: -0.8s;
+  }
+  .lds-grid div:nth-child(4) {
+    top: 32px;
+    left: 8px;
+    animation-delay: -0.4s;
+  }
+  .lds-grid div:nth-child(5) {
+    top: 32px;
+    left: 32px;
+    animation-delay: -0.8s;
+  }
+  .lds-grid div:nth-child(6) {
+    top: 32px;
+    left: 56px;
+    animation-delay: -1.2s;
+  }
+  .lds-grid div:nth-child(7) {
+    top: 56px;
+    left: 8px;
+    animation-delay: -0.8s;
+  }
+  .lds-grid div:nth-child(8) {
+    top: 56px;
+    left: 32px;
+    animation-delay: -1.2s;
+  }
+  .lds-grid div:nth-child(9) {
+    top: 56px;
+    left: 56px;
+    animation-delay: -1.6s;
+  }
+  @keyframes lds-grid {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+</style>
+
 <ion-header>
   <ion-toolbar>
-    <ion-title>Insertar Datos</ion-title>
+    <ion-title>Mateh Calculator</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-grid>
-      <!-- Angulo -->
-      <ion-row *ngFor="let input of inputs">
-        <ion-col size="10" size-md="4" offset-md="3">
-          <ion-item>
-            <ion-label floating>{{input.name}}</ion-label>
-            <ion-input [(ngModel)]="input.value" name="input.name" type="tel"></ion-input>
-            <ion-note item-end> {{input.selectedU}} </ion-note>
-          </ion-item>
-        </ion-col>
-        <!-- <ion-col col-2 align-self-center>
-        </ion-col> -->
-        <ion-col size="2" align-self-center>
-          <ion-item class="rounded">
-            <ion-label fixed class="text-center">Unidad</ion-label>
-            <ion-select (ionChange)="validateUnits(input)" interface="popover" [(ngModel)]="input.selectedU">
-              <ion-select-option *ngFor="let u of input.units" [value]="u">{{u}}</ion-select-option>
-            </ion-select>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <ion-grid>
+    <ion-row class="ion-no-padding">
+      <ion-col class="ion-no-padding" size-md="6">
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-list color="header">
+                <ion-item class="ion-text-right">
+                  <div *ngIf="!result" class="lds-grid">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  <ng-container *ngIf="result">
+                    <h1>Result</h1>
+                    <ion-label>
+                      <h1 *ngIf="!(formula.units == 'TasaDeInteres') ">
+                        {{result | number : '1.2-3'}} {{unidadSalida}}
+                      </h1>
+                      <h1 *ngIf="formula.units == 'TasaDeInteres' ">{{result | percent : '1.2-2'}} {{unidadSalida}}</h1>
+                    </ion-label>
+                  </ng-container>
+                </ion-item>
+                <ion-item class="ion-text-left">
+                  <ion-label>
+                    <h2>Ejercicio</h2>
+                    <h3 slot="end">{{formula?.desc}}</h3>
+                  </ion-label>
+                  <ion-buttons *ngIf="result" slot="end">
+                    <ion-button (click)="clickSelect($event, 'salidaSelect')">
+                      <ion-icon slot="icon-only" name="sync"></ion-icon>
+                    </ion-button>
+                    <ion-select
+                      [hidden]="true"
+                      name="salidaSelect"
+                      (ionChange)="convertir($event)"
+                      interface="popover"
+                      [(ngModel)]="unidadSalida"
+                    >
+                      <ion-select-option *ngFor="let u of formulaUnits" [value]="u">{{u}}</ion-select-option>
+                    </ion-select>
+                    <ion-button (click)="clear()">
+                      <ion-icon slot="icon-only" name="trash"></ion-icon>
+                    </ion-button>
+                  </ion-buttons>
+                </ion-item>
+              </ion-list>
+              <div class="divider">
+                <!-- <ion-button expand="block" color="header" clean full (click)="goHome()">Volver</ion-button> -->
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+      <ion-col class="ion-no-padding" size-md="6">
+        <ion-grid>
+          <ion-row class="ion-no-padding">
+            <ion-col class="ion-no-padding">
+              <!-- Angulo -->
+              <ion-list>
+                <div class="ion-hide-sm-down">
+                  <h3 style="margin: 3px 10px; text-align: center">Datos</h3>
+                  <hr style="background: white" />
+                </div>
+                <ion-row *ngFor="let input of inputs">
+                  <ion-col size="10">
+                    <ion-item>
+                      <ion-label position="floating">{{input.name}}</ion-label>
+                      <ion-input
+                        (ionChange)="onInputChange()"
+                        [(ngModel)]="input.value"
+                        name="input.name"
+                        type="number"
+                      ></ion-input>
+                      <ion-note slot="end"> {{input.selectedU}} </ion-note>
+                    </ion-item>
+                  </ion-col>
+                  <!-- <ion-col col-2 align-self-center>
+              </ion-col> -->
+                  <ion-col size="2">
+                    <ion-button strong color="secondary" fill="clear" (click)="clickSelect($event, input.name)">
+                      <ion-icon slot="icon-only" name="golf-outline"></ion-icon>
+                    </ion-button>
+                    <ion-select
+                      [name]="input.name"
+                      [hidden]="true"
+                      (ionChange)="validateUnits(input)"
+                      interface="popover"
+                      [(ngModel)]="input.selectedU"
+                    >
+                      <ion-select-option *ngFor="let u of input.units" [value]="u">{{u}}</ion-select-option>
+                    </ion-select>
+                    <!-- <ion-item class="rounded" color="primary">
+                  <ion-label fixed class="text-center">Unidad</ion-label>
+                  <ion-icon name="add"></ion-icon>
+                </ion-item> -->
+                  </ion-col>
+                </ion-row>
 
-    <!-- name -->
-    <!-- selectedU -->
-    <!-- unidades -->
-    <div class="divider"></div>
-    <ion-button expand="block" color="header" (click)="seleccionarUnidades()">Resolver</ion-button>
-  </ion-list>
+                <!-- name -->
+                <!-- selectedU -->
+                <!-- unidades -->
+                <div class="divider"></div>
+                <ion-button expand="block" color="primary" (click)="seleccionarUnidades()">Resolver</ion-button>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

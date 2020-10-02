@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
 import { Location } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ActionSheetController, AlertController } from "@ionic/angular";
+import { ActionSheetController, AlertController, IonSelect } from "@ionic/angular";
 import { Formula } from "../models/topics.model";
 import { ConversionesService, InputUnits } from "../services/conversiones.service";
 import { AppService } from "../services/app.service";
@@ -12,10 +12,14 @@ import { AppService } from "../services/app.service";
   styleUrls: ["./insert-data.page.scss"],
 })
 export class InsertDataPage implements OnInit {
+  @ViewChildren(IonSelect, { read: IonSelect }) selects: QueryList<IonSelect>;
   formula: Formula;
   uMedida: any;
   unidadSalida: string;
   inputs: any[];
+  result: number;
+  data = [];
+  formulaUnits: any[]; //array de unidades de salida de la formula
 
   constructor(
     private alertCtrl: AlertController,
@@ -34,6 +38,7 @@ export class InsertDataPage implements OnInit {
     this.app.selectedFormula$.subscribe((formula) => {
       if (formula) {
         this.formula = formula;
+        this.formulaUnits = InputUnits[this.formula.units] as any[];
         this.generateInputs();
       } else {
         this.alertCtrl
@@ -41,6 +46,7 @@ export class InsertDataPage implements OnInit {
             header: "Error",
             subHeader: "Necesito una formula",
             buttons: ["Ok"],
+            cssClass: "text-color-black",
           })
           .then((a) => {
             a.present();
@@ -48,6 +54,11 @@ export class InsertDataPage implements OnInit {
           });
       }
     });
+  }
+
+  clickSelect(e: any, name: string) {
+    const select = this.selects.find((i) => i.name == name);
+    select && select.open(e);
   }
 
   validateUnits(input: any) {
@@ -88,6 +99,7 @@ export class InsertDataPage implements OnInit {
         header: "Unidad de medida de salida",
         buttons: buttons,
         animated: true,
+        cssClass: "text-color-black",
       })
       .then((action) => {
         action.present();
@@ -118,6 +130,19 @@ export class InsertDataPage implements OnInit {
     }
   }
 
+  clear() {
+    this.result = 0;
+    this.inputs.forEach((e) => (e.value = 0));
+  }
+
+  convertir(e) {
+    this.solve();
+  }
+
+  onInputChange() {
+    if (this.result) this.result = 0;
+  }
+
   // Obtiene los datos de los inputs y devuelve un array de con ellos
   getArrayParams() {
     var params = {};
@@ -137,6 +162,7 @@ export class InsertDataPage implements OnInit {
           .create({
             header: "Error: Campo " + this.inputs[i].name,
             subHeader: "Los datos ingresados no son admitidos",
+            cssClass: "text-color-black",
             buttons: [
               {
                 text: "Aceptar",
@@ -167,14 +193,25 @@ export class InsertDataPage implements OnInit {
     var result: number = this.formula.handler(params, this.uMedida);
     console.log("result", result);
 
+    this.result = result;
+    this.generateData(params, this.uMedida);
     // Mostramos la pagina de resultados pasandole la formula, el resultado y los datos ingresados
-    this.router.navigate(["results/"], {
-      queryParams: {
-        result: result,
-        params: JSON.stringify(params),
-        unidades: JSON.stringify(this.uMedida),
-        unidadSalida: JSON.stringify(this.unidadSalida),
-      },
-    });
+    // this.router.navigate(["results/"], {
+    //   queryParams: {
+    //     result: result,
+    //     params: JSON.stringify(params),
+    //     unidades: JSON.stringify(this.uMedida),
+    //     unidadSalida: JSON.stringify(this.unidadSalida),
+    //   },
+    // });
+  }
+
+  generateData(params: any, unidades: any) {
+    var names = Object.getOwnPropertyNames(params); //Obtiene los nombres de los parametros
+
+    // GEnera un array con los nombres de los parametros, su valor y su unidad
+    for (let i = 0; i < names.length; i++) {
+      this.data.push({ name: names[i], value: params[names[i]], unidad: unidades[names[i]] });
+    }
   }
 }

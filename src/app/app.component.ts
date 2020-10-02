@@ -23,7 +23,14 @@ export class AppComponent implements OnInit {
     { title: "Conversiones", url: `/topic/${topics.conversiones}`, icon: "heart" },
   ];
 
-  labels = ["Family", "Friends", "Notes", "Work", "Travel", "Reminders"];
+  labels = [
+    "Mateh Elismar",
+    "Creaciion Virtual",
+    "Fisica",
+    "Ingenieria Economica",
+    "creacionvirtual.com",
+    "physicjokes.creacionvirtual.com",
+  ];
 
   constructor(private platform: Platform, private splashScreen: SplashScreen, private statusBar: StatusBar) {
     this.initializeApp();
