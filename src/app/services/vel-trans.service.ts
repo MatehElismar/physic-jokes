@@ -71,8 +71,6 @@ export class VelTransService extends SuperTopic {
       Salida: typeof InputUnits.Velocidad[number];
     }
   ): number {
-    const [uSalidaDistancia, uSalidaTiempo] = uMedida.Salida.split("/"); //Dividimos la unidad de salida de velocidad para saber en que unidades quiere el arco y tiempo en el resultado
-
     // convertir variables a sus unidades bases
     distancia = this.conversiones.convertirLongitud(distancia, uMedida.Distancia, "M");
     tiempo = this.conversiones.convertirTiempo(tiempo, uMedida.Tiempo, "s");
@@ -117,7 +115,7 @@ export class VelTransService extends SuperTopic {
   ) {
     // convertir variables a sus unidades bases
     distancia = this.conversiones.convertirLongitud(distancia, uMedida.Distancia, "M");
-    speed = this.conversiones.convertirVelocidad(distancia, uMedida.Velocidad, "M/S");
+    speed = this.conversiones.convertirVelocidad(speed, uMedida.Velocidad, "M/S");
 
     const time = distancia / speed;
 

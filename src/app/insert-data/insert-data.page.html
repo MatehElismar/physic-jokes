@@ -82,7 +82,7 @@
 <ion-content>
   <ion-grid>
     <ion-row class="ion-no-padding">
-      <ion-col class="ion-no-padding" size-md="6">
+      <ion-col class="ion-no-padding" size="12" size-md="6">
         <ion-grid>
           <ion-row>
             <ion-col>
@@ -103,28 +103,26 @@
                     <h1>Result</h1>
                     <ion-label>
                       <h1 *ngIf="!(formula.units == 'TasaDeInteres') ">
-                        {{result | number : '1.2-3'}} {{unidadSalida}}
+                        {{result | number : '1.2-2'}} {{unidadSalida}}
                       </h1>
                       <h1 *ngIf="formula.units == 'TasaDeInteres' ">{{result | percent : '1.2-2'}} {{unidadSalida}}</h1>
+                      <ion-note>{{result}}</ion-note>
                     </ion-label>
                   </ng-container>
                 </ion-item>
                 <ion-item class="ion-text-left">
                   <ion-label>
-                    <h2>Ejercicio</h2>
+                    <h2>Ejercicio {{" "}}</h2>
                     <h3 slot="end">{{formula?.desc}}</h3>
                   </ion-label>
                   <ion-buttons *ngIf="result" slot="end">
+                    <ion-button (click)="app.copyResult(result)">
+                      <ion-icon slot="icon-only" name="copy-outline"></ion-icon>
+                    </ion-button>
                     <ion-button (click)="clickSelect($event, 'salidaSelect')">
                       <ion-icon slot="icon-only" name="sync"></ion-icon>
                     </ion-button>
-                    <ion-select
-                      [hidden]="true"
-                      name="salidaSelect"
-                      (ionChange)="convertir($event)"
-                      interface="popover"
-                      [(ngModel)]="unidadSalida"
-                    >
+                    <ion-select [hidden]="true" name="salidaSelect">
                       <ion-select-option *ngFor="let u of formulaUnits" [value]="u">{{u}}</ion-select-option>
                     </ion-select>
                     <ion-button (click)="clear()">
@@ -140,7 +138,7 @@
           </ion-row>
         </ion-grid>
       </ion-col>
-      <ion-col class="ion-no-padding" size-md="6">
+      <ion-col class="ion-no-padding" size="12" size-md="6">
         <ion-grid>
           <ion-row class="ion-no-padding">
             <ion-col class="ion-no-padding">
@@ -196,5 +194,23 @@
         </ion-grid>
       </ion-col>
     </ion-row>
+    <ion-row>
+      <ion-col size="12" size-md="12">
+        <ion-card class="ion-hide-sm-down">
+          <ion-card-header>
+            <ion-card-title>Historial</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <app-history table></app-history>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
   </ion-grid>
+  <ion-fab class="ion-hide-sm-up" vertical="bottom" horizontal="center" slot="fixed">
+    <ion-fab-button (click)="showHistory()">
+      <ion-icon name="arrow-up-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

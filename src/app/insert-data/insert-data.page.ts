@@ -1,10 +1,17 @@
 import { Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
 import { Location } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ActionSheetController, AlertController, IonSelect } from "@ionic/angular";
-import { Formula } from "../models/topics.model";
+import { ActionSheetController, AlertController, IonSelect, ModalController, ToastController } from "@ionic/angular";
+import { DataEntry, Formula, HistoryRecord } from "../models/topics.model";
 import { ConversionesService, InputUnits } from "../services/conversiones.service";
 import { AppService } from "../services/app.service";
+import { Clipboard } from "@capacitor/core";
+import { HistoryComponent } from "../components/history/history.component";
+import { topics } from "../conts";
+import { CinematicaRotacionalService } from "../services/cinematica-rotacional.service";
+import { VelTransService } from "../services/vel-trans.service";
+import { InterestService } from "../services/interest.service";
+import { SpeedService } from "../services/speed.service";
 
 @Component({
   selector: "app-insert-data",
@@ -13,21 +20,25 @@ import { AppService } from "../services/app.service";
 })
 export class InsertDataPage implements OnInit {
   @ViewChildren(IonSelect, { read: IonSelect }) selects: QueryList<IonSelect>;
+  @ViewChild(HistoryComponent, { read: HistoryComponent }) history: HistoryComponent;
   formula: Formula;
   uMedida: any;
   unidadSalida: string;
   inputs: any[];
   result: number;
-  data = [];
   formulaUnits: any[]; //array de unidades de salida de la formula
 
   constructor(
     private alertCtrl: AlertController,
     private actionCtrl: ActionSheetController,
-    private router: Router,
-    private app: AppService,
-    private _location: Location,
-    private route: ActivatedRoute
+    public app: AppService,
+    private activatedRoute: ActivatedRoute,
+    private modalCtrl: ModalController,
+    private cinematicaRotacional: CinematicaRotacionalService,
+    private velTrans: VelTransService,
+    private speed: SpeedService,
+    private interest: InterestService,
+    private conversiones: ConversionesService
   ) {
     this.uMedida = {};
 
@@ -38,20 +49,27 @@ export class InsertDataPage implements OnInit {
     this.app.selectedFormula$.subscribe((formula) => {
       if (formula) {
         this.formula = formula;
+
+        // gemerar inputs
         this.formulaUnits = InputUnits[this.formula.units] as any[];
         this.generateInputs();
       } else {
-        this.alertCtrl
-          .create({
-            header: "Error",
-            subHeader: "Necesito una formula",
-            buttons: ["Ok"],
-            cssClass: "text-color-black",
-          })
-          .then((a) => {
-            a.present();
-            a.onDidDismiss().then(() => this._location.back());
-          });
+        this.activatedRoute.queryParamMap.subscribe((params) => {
+          const topic = params.get("topic");
+          const formulaDesc = params.get("formula");
+
+          if (topic == topics.cinematica_rotacional)
+            this.formula = this.cinematicaRotacional.formulas.find((x) => x.desc == formulaDesc);
+          else if (topic == topics.conversiones)
+            this.formula = this.conversiones.formulas.find((x) => x.desc == formulaDesc);
+          else if (topic == topics.vel_trans) this.formula = this.velTrans.formulas.find((x) => x.desc == formulaDesc);
+          else if (topic == topics.speed) this.formula = this.speed.formulas.find((x) => x.desc == formulaDesc);
+          else if (topic == topics.interest) this.formula = this.interest.formulas.find((x) => x.desc == formulaDesc);
+
+          // gemerar inputs
+          this.formulaUnits = InputUnits[this.formula.units] as any[];
+          this.generateInputs();
+        });
       }
     });
   }
@@ -61,8 +79,21 @@ export class InsertDataPage implements OnInit {
     select && select.open(e);
   }
 
+  showHistory() {
+    this.modalCtrl
+      .create({
+        component: HistoryComponent,
+        backdropDismiss: true,
+        cssClass: "non-top",
+        keyboardClose: true,
+      })
+      .then((action) => {
+        action.present();
+      });
+  }
+
   validateUnits(input: any) {
-    console.log("Estamos aqui");
+    //console.log("Estamos aqui");
     if (this.formula.validateComponentes != undefined) {
       if (input.name.contains("radio")) {
         input.units = this.formula.validateComponentes(input["Radio:Valor1"], input["Radio:Valor2"]);
@@ -185,33 +216,46 @@ export class InsertDataPage implements OnInit {
       // Si hay un dato incorrecto cancelamos la operacion
       return false;
     }
-    console.log("uMedida", this.uMedida);
-    console.log("params", this.getArrayParams());
+    //console.log("uMedida", this.uMedida);
+    //console.log("params", this.getArrayParams());
     var params = this.getArrayParams();
 
     // Llamamos al metodo que resuelve el problema dandole los datos ingresados y sus respectivas unidades de medida
     var result: number = this.formula.handler(params, this.uMedida);
-    console.log("result", result);
+    //console.log("result", result);
 
     this.result = result;
-    this.generateData(params, this.uMedida);
-    // Mostramos la pagina de resultados pasandole la formula, el resultado y los datos ingresados
-    // this.router.navigate(["results/"], {
-    //   queryParams: {
-    //     result: result,
-    //     params: JSON.stringify(params),
-    //     unidades: JSON.stringify(this.uMedida),
-    //     unidadSalida: JSON.stringify(this.unidadSalida),
-    //   },
-    // });
+    const dataEntries = this.generateDataEntries(params, this.uMedida);
+    this.updateHistory(dataEntries);
   }
 
-  generateData(params: any, unidades: any) {
-    var names = Object.getOwnPropertyNames(params); //Obtiene los nombres de los parametros
+  updateHistory(dataEntries: DataEntry[]) {
+    const key = "history";
+    const record: HistoryRecord = {
+      dataEntries,
+      result: this.result,
+      unidadSalida: this.unidadSalida,
+      formula: {
+        desc: this.formula.desc,
+        note: this.formula.note,
+        units: this.formula.units,
+      },
+    };
+    let history: HistoryRecord[] = JSON.parse(localStorage.getItem(key));
+    if (history) history.unshift(record);
+    else history = [record];
 
+    localStorage.setItem(key, JSON.stringify(history));
+    this.history.updateHistory();
+  }
+
+  generateDataEntries(params: any, unidades: any) {
+    var names = Object.getOwnPropertyNames(params); //Obtiene los nombres de los parametros
+    const dataEntries = new Array<DataEntry>();
     // GEnera un array con los nombres de los parametros, su valor y su unidad
     for (let i = 0; i < names.length; i++) {
-      this.data.push({ name: names[i], value: params[names[i]], unidad: unidades[names[i]] });
+      dataEntries.push({ name: names[i], value: params[names[i]], unit: unidades[names[i]] });
     }
+    return dataEntries;
   }
 }

@@ -1,0 +1,59 @@
+<ion-content class="ion-hide-sm-up">
+  <ion-toolbar class="bg">
+    <ion-title>Historial</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-list>
+    <div *ngFor="let i of history" class="divider">
+      <ion-item lines="none">
+        <ion-label>
+          <h2>{{ i.result | number: "1.2-2" }} {{ i.unidadSalida }}</h2>
+          <h2>{{ i.formula.desc }}</h2>
+          <ion-note slot="end">{{ i.result }}</ion-note>
+        </ion-label>
+        <ion-buttons>
+          <ion-button (click)="app.copyResult(i.result)">
+            <ion-icon slot="icon-only" name="copy"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+      <ion-chip *ngFor="let e of i.dataEntries">
+        <ion-label>{{ e.name }}: {{ e.value }} {{ e.unit }}</ion-label>
+      </ion-chip>
+    </div>
+  </ion-list>
+</ion-content>
+<ion-grid class="web ion-hide-sm-down" fixed>
+  <ion-row class="header">
+    <ion-col size="4"><ion-text>Resultado</ion-text></ion-col>
+    <ion-col size="2">Formula</ion-col>
+    <ion-col size="5">Data</ion-col>
+    <ion-col size="1">Copiar</ion-col>
+  </ion-row>
+  <ion-row *ngFor="let i of history">
+    <ion-col size="4">
+      <ng-container *ngIf="i.result">
+        <ion-label>
+          <h2 *ngIf="!(i.formula.units == 'TasaDeInteres')">{{ i.result | number: "1.2-2" }} {{ i.unidadSalida }}</h2>
+          <h2 *ngIf="i.formula.units == 'TasaDeInteres'">{{ i.result | percent: "1.2-2" }} {{ i.unidadSalida }}</h2>
+          <ion-note>{{ i.result }}</ion-note>
+        </ion-label>
+      </ng-container>
+    </ion-col>
+    <ion-col size="2">{{ i.formula.desc }}</ion-col>
+    <ion-col size="5">
+      <ion-chip *ngFor="let e of i.dataEntries">
+        <ion-label>{{ e.name }}: {{ e.value }} {{ e.unit }}</ion-label>
+      </ion-chip></ion-col
+    >
+    <ion-col size="1">
+      <ion-button expand="clear" (click)="app.copyResult(i.result)">
+        <ion-icon color="dark" slot="icon-only" name="copy-outline"></ion-icon>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-grid>

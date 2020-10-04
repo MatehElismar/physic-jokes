@@ -3,7 +3,7 @@
   "appName": "physics-jokes",
   "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "www",
+  "webDir": "docs",
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 0

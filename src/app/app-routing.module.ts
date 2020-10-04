@@ -13,12 +13,12 @@ const routes: Routes = [
     loadChildren: () => import("./topic/topic.module").then((m) => m.TopicPageModule),
   },
   {
-    path: 'insert-data',
-    loadChildren: () => import('./insert-data/insert-data.module').then( m => m.InsertDataPageModule)
+    path: "calculator",
+    loadChildren: () => import("./insert-data/insert-data.module").then((m) => m.InsertDataPageModule),
   },
   {
-    path: 'results',
-    loadChildren: () => import('./results/results.module').then( m => m.ResultsPageModule)
+    path: "results",
+    loadChildren: () => import("./results/results.module").then((m) => m.ResultsPageModule),
   },
 ];
 

@@ -71,7 +71,7 @@ export class ConversionesService extends SuperTopic {
     this.Velocidad = new Velocidad();
     this.Aceleracion = new Aceleracion();
 
-    console.log("Hello ConversionesProvider Provider");
+    //console.log("Hello ConversionesProvider Provider");
   }
 
   RadianAGrado(radian: number) {
@@ -170,19 +170,19 @@ export class ConversionesService extends SuperTopic {
     from: typeof InputUnits.Frecuencia[number],
     to: typeof InputUnits.Frecuencia[number]
   ) {
-    console.log("Frecuencia -> Conversion:from ", frecuencia);
+    //console.log("Frecuencia -> Conversion:from ", frecuencia);
 
     if (from == "Hz" && to == "RPM") {
       frecuencia = this.Frecuencia.hz_to_rpm(frecuencia);
     } else if (from == "RPM" && to == "Hz") {
       frecuencia = this.Frecuencia.rpm_to_hz(frecuencia);
     }
-    console.log("Frecuencia -> Connversion:Salida", frecuencia);
+    //console.log("Frecuencia -> Connversion:Salida", frecuencia);
     return frecuencia;
   }
 
   public convertirTiempo(tiempo, from: typeof InputUnits.Tiempo[number], to: typeof InputUnits.Tiempo[number]) {
-    console.log("Conversion:from ", tiempo);
+    //console.log("Conversion:from ", tiempo);
     if (from == "h" && to == "min") tiempo = this.Tiempo.hh_a_mm(tiempo);
     else if (from == "h" && to == "s") tiempo = this.Tiempo.hh_a_Segundoss(tiempo);
     else if (from == "min" && to == "h") tiempo = this.Tiempo.mm_a_hh(tiempo);
@@ -190,7 +190,7 @@ export class ConversionesService extends SuperTopic {
     else if (from == "s" && to == "min") tiempo = this.Tiempo.ss_a_mm(tiempo);
     else if (from == "s" && to == "h") tiempo = this.Tiempo.ss_a_hh(tiempo);
 
-    console.log("Connversion:Salida", tiempo);
+    //console.log("Connversion:Salida", tiempo);
     return tiempo;
 
     return tiempo;
@@ -214,7 +214,7 @@ export class ConversionesService extends SuperTopic {
     from: typeof InputUnits.Longitud[number],
     to: typeof InputUnits.Longitud[number]
   ) {
-    console.log("Longitud -> Conversion:from ", longitud);
+    //console.log("Longitud -> Conversion:from ", longitud);
 
     if (from == "M" && to == "Cm") {
       longitud = this.Longitud.mt_a_cm(longitud);
@@ -230,19 +230,19 @@ export class ConversionesService extends SuperTopic {
       longitud = this.Longitud.km_a_cm(longitud);
     }
 
-    console.log("Longitud -> Connversion:Salida", longitud);
+    //console.log("Longitud -> Connversion:Salida", longitud);
 
     return longitud;
   }
 
   convertirArco(arco: number, from: typeof InputUnits.Arco[number], to: typeof InputUnits.Arco[number]) {
-    console.log("Conversion:from ", arco);
+    //console.log("Conversion:from ", arco);
     if (from == "Rad" && to == "Rev") {
       arco = this.Longitud.Angular.RadianARev(arco);
     } else if (from == "Rev" && to == "Rad") {
       arco = this.Longitud.Angular.RevolucionARadian(arco);
     }
-    console.log("Connversion:Salida", arco);
+    //console.log("Connversion:Salida", arco);
     return arco;
   }
 }
@@ -260,7 +260,7 @@ class Velocidad {
 
   // conversiones a <> desde <>
   Rad_Por_Segundo(vel: number, from: typeof InputUnits.Velocidad_Angular[number]) {
-    console.log("Velocidad -> Conversion:from ", vel);
+    //console.log("Velocidad -> Conversion:from ", vel);
 
     if (from == "Rad/m") {
       vel = vel * 0.016666666667;
@@ -273,12 +273,12 @@ class Velocidad {
     } else if (from == "Rev/h") {
       vel = vel * 0.001745329252;
     }
-    console.log("Velocidad -> Connversion:Salida", vel);
+    //console.log("Velocidad -> Connversion:Salida", vel);
     return vel;
   }
 
   Rad_Por_Min(vel: number, from: typeof InputUnits.Velocidad_Angular[number]) {
-    console.log("Velocidad -> Conversion:from ", vel);
+    //console.log("Velocidad -> Conversion:from ", vel);
 
     if (from == "Rad/s") {
       vel = vel * 60;
@@ -291,12 +291,12 @@ class Velocidad {
     } else if (from == "Rev/h") {
       vel = vel * 0.10471975512;
     }
-    console.log("Velocidad -> Connversion:Salida", vel);
+    //console.log("Velocidad -> Connversion:Salida", vel);
     return vel;
   }
 
   Rad_Por_Hora(vel: number, from: typeof InputUnits.Velocidad_Angular[number]) {
-    console.log("Velocidad -> Conversion:from ", vel);
+    //console.log("Velocidad -> Conversion:from ", vel);
 
     if (from == "Rad/m") {
       vel = vel * 60;
@@ -309,12 +309,12 @@ class Velocidad {
     } else if (from == "Rev/h") {
       vel = vel * 6.2831853072;
     }
-    console.log("Velocidad -> Connversion:Salida", vel);
+    //console.log("Velocidad -> Connversion:Salida", vel);
     return vel;
   }
 
   Rev_Por_Segundos(vel: number, from: typeof InputUnits.Velocidad_Angular[number]) {
-    console.log("Velocidad -> Conversion:from ", vel);
+    //console.log("Velocidad -> Conversion:from ", vel);
 
     if (from == "Rad/m") {
       vel = vel * 0.0026525823849;
@@ -327,12 +327,12 @@ class Velocidad {
     } else if (from == "Rev/h") {
       vel = vel * 0.00027777777778;
     }
-    console.log("Velocidad -> Connversion:Salida", vel);
+    //console.log("Velocidad -> Connversion:Salida", vel);
     return vel;
   }
 
   Rev_Por_Min(vel: number, from: typeof InputUnits.Velocidad_Angular[number]) {
-    console.log("Velocidad -> Conversion:from ", vel);
+    //console.log("Velocidad -> Conversion:from ", vel);
 
     if (from == "Rad/s") {
       vel = vel * 9.5492965855;
@@ -345,12 +345,12 @@ class Velocidad {
     } else if (from == "Rev/h") {
       vel = vel * 0.016666666667;
     }
-    console.log("Velocidad -> Connversion:Salida", vel);
+    //console.log("Velocidad -> Connversion:Salida", vel);
     return vel;
   }
 
   Rev_Por_Hora(vel: number, from: typeof InputUnits.Velocidad_Angular[number]) {
-    console.log("Velocidad -> Conversion:from ", vel);
+    //console.log("Velocidad -> Conversion:from ", vel);
 
     if (from == "Rad/m") {
       vel = vel * 9.5492965855;
@@ -363,43 +363,41 @@ class Velocidad {
     } else if (from == "Rad/h") {
       vel = vel * 0.15915494309;
     }
-    console.log("Velocidad -> Connversion:Salida", vel);
+    //console.log("Velocidad -> Connversion:Salida", vel);
     return vel;
   }
 
   Mt_Por_Segundo(vel: number, from: typeof InputUnits.Velocidad[number]) {
-    console.log("Velocidad -> Conversion:from ", vel);
+    //console.log("Velocidad -> Conversion:from ", vel);
 
-    if (from == "MPH") {
-      vel = vel * 0.44704;
-    } else if (from == "KM/H") {
-      vel = vel * 0.27777777778;
-    }
-    console.log("Velocidad -> Connversion:Salida", vel);
+    if (from == "MPH") vel = vel / 2.237;
+    else if (from == "KM/H") vel = vel / 3.6;
+
+    //console.log("Velocidad -> Connversion:Salida", vel);
     return vel;
   }
 
   Km_Por_Hora(vel: number, from: typeof InputUnits.Velocidad[number]) {
-    console.log("Velocidad -> Conversion:from ", vel);
+    //console.log("Velocidad -> Conversion:from ", vel);
 
     if (from == "M/S") {
       vel = vel * 3.6;
     } else if (from == "MPH") {
       vel = vel * 1.609344;
     }
-    console.log("Velocidad -> Connversion:Salida", vel);
+    //console.log("Velocidad -> Connversion:Salida", vel);
     return vel;
   }
 
   MPH(vel: number, from: typeof InputUnits.Velocidad[number]) {
-    console.log("Velocidad -> Conversion:from ", vel);
+    //console.log("Velocidad -> Conversion:from ", vel);
 
     if (from == "M/S") {
       vel = vel * 2.2369362921;
     } else if (from == "KM/H") {
-      vel = vel * 0.62137119224;
+      vel = vel / 1.609344;
     }
-    console.log("Velocidad -> Connversion:Salida", vel);
+    //console.log("Velocidad -> Connversion:Salida", vel);
     return vel;
   }
 }
@@ -410,7 +408,7 @@ class Aceleracion {
 
   //#region   Aceleracion Angular
   Rad_Por_Min(vel: number, from: typeof InputUnits.Aceleracion_Angular[number]) {
-    console.log("Aceleracion -> Conversion:from ", vel);
+    //console.log("Aceleracion -> Conversion:from ", vel);
 
     if (from == "Rad/s²") {
       vel = vel * 3600;
@@ -420,12 +418,12 @@ class Aceleracion {
       vel = vel * 22619.467102;
     }
 
-    console.log("Aceleracion -> Connversion:Salida", vel);
+    //console.log("Aceleracion -> Connversion:Salida", vel);
     return vel;
   }
 
   Rad_Por_Segundo(vel: number, from: typeof InputUnits.Aceleracion_Angular[number]) {
-    console.log("Aceleracion -> Conversion:from ", vel);
+    //console.log("Aceleracion -> Conversion:from ", vel);
 
     if (from == "Rad/m²") {
       vel = vel * 0.00027777777778;
@@ -435,12 +433,12 @@ class Aceleracion {
       vel = vel * 6.2831853062;
     }
 
-    console.log("Aceleracion -> Connversion:Salida", vel);
+    //console.log("Aceleracion -> Connversion:Salida", vel);
     return vel;
   }
 
   Rev_Por_Segundos(vel: number, from: typeof InputUnits.Aceleracion_Angular[number]) {
-    console.log("Aceleracion -> Conversion:from ", vel);
+    //console.log("Aceleracion -> Conversion:from ", vel);
 
     if (from == "Rad/m²") {
       vel = vel * 0.000044209706421;
@@ -450,12 +448,12 @@ class Aceleracion {
       vel = vel * 0.00027777777778;
     }
 
-    console.log("Aceleracion -> Connversion:Salida", vel);
+    //console.log("Aceleracion -> Connversion:Salida", vel);
     return vel;
   }
 
   Rev_Por_Min(vel: number, from: typeof InputUnits.Aceleracion_Angular[number]) {
-    console.log("Aceleracion -> Conversion:from ", vel);
+    //console.log("Aceleracion -> Conversion:from ", vel);
 
     if (from == "Rad/m²") {
       vel = vel * 0.15915494312;
@@ -465,13 +463,13 @@ class Aceleracion {
       vel = vel * 3600;
     }
 
-    console.log("Aceleracion -> Connversion:Salida", vel);
+    //console.log("Aceleracion -> Connversion:Salida", vel);
     return vel;
   }
   //#endregion
 
   Mt_Por_Segundo(aceleracion: number, from: typeof InputUnits.Aceleracion[number]) {
-    console.log("Aceleracion -> Conversion:from ", aceleracion);
+    //console.log("Aceleracion -> Conversion:from ", aceleracion);
 
     if (from == "KM/s²") {
       aceleracion = aceleracion * 1000;
@@ -479,12 +477,12 @@ class Aceleracion {
       aceleracion = aceleracion * 1609.344;
     }
 
-    console.log("Aceleracion -> Connversion:Salida", aceleracion);
+    //console.log("Aceleracion -> Connversion:Salida", aceleracion);
     return aceleracion;
   }
 
   Millas_Por_Segundos(aceleracion: number, from: typeof InputUnits.Aceleracion[number]) {
-    console.log("Aceleracion -> Conversion:from ", aceleracion);
+    //console.log("Aceleracion -> Conversion:from ", aceleracion);
 
     if (from == "KM/s²") {
       aceleracion = aceleracion * 0.62137119224;
@@ -492,12 +490,12 @@ class Aceleracion {
       aceleracion = aceleracion * 0.00062137119224;
     }
 
-    console.log("Aceleracion -> Connversion:Salida", aceleracion);
+    //console.log("Aceleracion -> Connversion:Salida", aceleracion);
     return aceleracion;
   }
 
   Km_Por_Segundos(aceleracion: number, from: typeof InputUnits.Aceleracion[number]) {
-    console.log("Aceleracion -> Conversion:from ", aceleracion);
+    //console.log("Aceleracion -> Conversion:from ", aceleracion);
 
     if (from == "M/s²") {
       aceleracion = aceleracion * 0.001;
@@ -505,7 +503,7 @@ class Aceleracion {
       aceleracion = aceleracion * 1.609344;
     }
 
-    console.log("Aceleracion -> Connversion:Salida", aceleracion);
+    //console.log("Aceleracion -> Connversion:Salida", aceleracion);
     return aceleracion;
   }
 }
@@ -592,7 +590,7 @@ class Longitud {
   }
 
   km_a_mt(km: number) {
-    return km / 1000;
+    return km * 1000;
   }
 
   km_a_cm(km: number) {
@@ -604,7 +602,7 @@ class Longitud {
   }
 
   mt_a_km(mt: number) {
-    return mt * 1000;
+    return mt / 1000;
   }
 }
 

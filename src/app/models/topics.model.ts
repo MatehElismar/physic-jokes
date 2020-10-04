@@ -1,5 +1,18 @@
 import { PhysicVariable } from "../services/conversiones.service";
 
+export interface HistoryRecord {
+  formula: Partial<Formula>;
+  unidadSalida: string;
+  dataEntries: Array<DataEntry>;
+  result: number;
+}
+
+export interface DataEntry {
+  name: string;
+  value: number;
+  unit: string;
+}
+
 export interface Formula {
   topic?: string;
   desc: string;
