@@ -3,7 +3,7 @@ import { SuperTopic } from "../models/topics.model";
 
 // defines what exactly is th unit used for.
 export class InputUnits {
-  static null = [] as const; //No tiene units
+  static null = [""] as const; //No tiene units
   static none = ["Constante"] as const; //Es una constante, su valor es fijo, no lo decide el usuario
   static Angulo = ["Grados", "Radian"] as const;
   static Arco = ["Rad", "Rev"] as const;

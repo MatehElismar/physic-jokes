@@ -6,6 +6,7 @@ import { AppService } from "../services/app.service";
 import { CinematicaRotacionalService } from "../services/cinematica-rotacional.service";
 import { ConversionesService } from "../services/conversiones.service";
 import { InterestService } from "../services/interest.service";
+import { BreakevenService } from "../services/breakeven.service";
 import { SpeedService } from "../services/speed.service";
 import { VelTransService } from "../services/vel-trans.service";
 
@@ -25,7 +26,8 @@ export class TopicPage implements OnInit {
     private velTrans: VelTransService,
     private speed: SpeedService,
     private interest: InterestService,
-    private conversiones: ConversionesService
+    private conversiones: ConversionesService,
+    private breakeven: BreakevenService
   ) {}
 
   ngOnInit() {
@@ -37,6 +39,8 @@ export class TopicPage implements OnInit {
     else if (this.topicID == topics.vel_trans) this.topic = new SuperTopic(this.velTrans.name, this.velTrans.formulas);
     else if (this.topicID == topics.speed) this.topic = new SuperTopic(this.speed.name, this.speed.formulas);
     else if (this.topicID == topics.interest) this.topic = new SuperTopic(this.interest.name, this.interest.formulas);
+    else if (this.topicID == topics.breakeven)
+      this.topic = new SuperTopic(this.breakeven.name, this.breakeven.formulas);
   }
 
   selectFormula(formula: Formula) {

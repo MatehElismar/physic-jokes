@@ -12,6 +12,7 @@ import { CinematicaRotacionalService } from "../services/cinematica-rotacional.s
 import { VelTransService } from "../services/vel-trans.service";
 import { InterestService } from "../services/interest.service";
 import { SpeedService } from "../services/speed.service";
+import { BreakevenService } from "../services/breakeven.service";
 
 @Component({
   selector: "app-insert-data",
@@ -38,7 +39,8 @@ export class InsertDataPage implements OnInit {
     private velTrans: VelTransService,
     private speed: SpeedService,
     private interest: InterestService,
-    private conversiones: ConversionesService
+    private conversiones: ConversionesService,
+    private breakeven: BreakevenService
   ) {
     this.uMedida = {};
 
@@ -65,6 +67,7 @@ export class InsertDataPage implements OnInit {
           else if (topic == topics.vel_trans) this.formula = this.velTrans.formulas.find((x) => x.desc == formulaDesc);
           else if (topic == topics.speed) this.formula = this.speed.formulas.find((x) => x.desc == formulaDesc);
           else if (topic == topics.interest) this.formula = this.interest.formulas.find((x) => x.desc == formulaDesc);
+          else if (topic == topics.breakeven) this.formula = this.breakeven.formulas.find((x) => x.desc == formulaDesc);
 
           // gemerar inputs
           this.formulaUnits = InputUnits[this.formula.units] as any[];
@@ -113,17 +116,20 @@ export class InsertDataPage implements OnInit {
       this.unidadSalida = u[0]; //Para pasarselo a la tabla de conversion
       this.solve();
       return;
-    }
-
-    for (let i = 0; i < u.length; i++) {
-      buttons.push({
-        text: u[i],
-        handler: () => {
-          this.unidadSalida = u[i]; //Para pasarselo a la tabla de conversion
-          this.solve();
-        },
-      });
-    }
+    } else if (u.length == 1) {
+      this.unidadSalida = u[0]; //Para pasarselo a la tabla de conversion
+      this.solve();
+      return;
+    } else
+      for (let i = 0; i < u.length; i++) {
+        buttons.push({
+          text: u[i],
+          handler: () => {
+            this.unidadSalida = u[i]; //Para pasarselo a la tabla de conversion
+            this.solve();
+          },
+        });
+      }
 
     this.actionCtrl
       .create({

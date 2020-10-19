@@ -12,10 +12,28 @@
           <ion-item-group>
             <div *ngFor="let f of topic?.formulas">
               <ion-item-divider color="light" *ngIf="f.topic != undefined">{{f.topic}}</ion-item-divider>
-              <ion-item button class="formula text-center" (click)="selectFormula(f)">
-                <h4>{{f.desc}}</h4>
-                <ion-note slot="end">{{f.note}}</ion-note>
+              <ion-item (click)="selectFormula(f)" button class="formula text-center">
+                <ng-container>
+                  <h4>{{f.desc}}</h4>
+                  <ion-note slot="end">{{f.note}}</ion-note>
+                </ng-container>
+                <ion-buttons *ngIf="f.glosario" slot="end">
+                  <ion-button size="small" (click)="f.showGlosario = !$any(f).showGlosario;$event.stopPropagation();">
+                    <ion-icon
+                      slot="icon-only"
+                      [name]="!$any(f).showGlosario ? 'information-circle' : 'information-circle-outline'"
+                    ></ion-icon>
+                  </ion-button>
+                </ion-buttons>
               </ion-item>
+              <ion-card color="dark" *ngIf="$any(f).showGlosario" button class="formula text-center">
+                <ion-card-content>
+                  <div *ngFor="let t of f.glosario">
+                    <h4>{{t.term}}</h4>
+                    <ion-note slot="end">{{t.desc}}</ion-note>
+                  </div>
+                </ion-card-content>
+              </ion-card>
             </div>
           </ion-item-group>
         </ion-list>

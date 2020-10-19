@@ -12,15 +12,17 @@ import { topics } from "./conts";
 })
 export class AppComponent implements OnInit {
   selectedIndex = 0;
+  icon = "calculator";
 
   // used for an example of ngFor and navigation
   topics = [
     // { title: 'Home', component: HomePage },
-    { title: "Intereses", url: `/topic/${topics.interest}`, icon: "heart" },
-    { title: "Velocidad Transaccional", url: `/topic/${topics.vel_trans}`, icon: "heart" },
-    { title: "Velocidad Angular", url: `/topic/${topics.speed}`, icon: "heart" },
-    { title: "Cinematica Rotacional", url: `/topic/${topics.cinematica_rotacional}`, icon: "heart" },
-    { title: "Conversiones", url: `/topic/${topics.conversiones}`, icon: "heart" },
+    { title: "Punto De Equilibrio", url: `/topic/${topics.breakeven}` },
+    { title: "Intereses", url: `/topic/${topics.interest}` },
+    { title: "Velocidad Transaccional", url: `/topic/${topics.vel_trans}` },
+    { title: "Velocidad Angular", url: `/topic/${topics.speed}` },
+    { title: "Cinematica Rotacional", url: `/topic/${topics.cinematica_rotacional}` },
+    { title: "Conversiones", url: `/topic/${topics.conversiones}` },
   ];
 
   labels = [

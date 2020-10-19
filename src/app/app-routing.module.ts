@@ -5,7 +5,7 @@ import { topics } from "./conts";
 const routes: Routes = [
   {
     path: "",
-    redirectTo: `topic/${topics.interest}`,
+    redirectTo: `topic/${topics.breakeven}`,
     pathMatch: "full",
   },
   {

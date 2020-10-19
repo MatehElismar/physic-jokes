@@ -17,6 +17,7 @@ export interface Formula {
   topic?: string;
   desc: string;
   note?: string;
+  glosario?: Array<{ term: string; desc: string }>;
   properties: Array<{
     name: string;
     allowedInputUnits: PhysicVariable[]; //the input units of the specified physic variable are allowed

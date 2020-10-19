@@ -4,4 +4,5 @@ export const topics = {
   conversiones: "conversiones",
   speed: "speed",
   interest: "interest",
+  breakeven: "breakeven",
 };
